@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Button from "../common/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, Fontisto, FontAwesome } from "@expo/vector-icons";
@@ -8,7 +8,6 @@ import * as ImagePicker from "expo-image-picker";
 import { me, reset, Onlogout, update } from "../../features/authSlice";
 
 const Home = () => {
-  // const [image, setImage] = useState("");
   const Nav = useNavigation();
 
   const dispatch = useDispatch();
@@ -21,13 +20,13 @@ const Home = () => {
       console.log(message);
     }
 
-    // if (!user) {
-    //   console.log("user empty");
-    //   Nav.navigate("SignIn");
-    // }
+    if (!user) {
+      console.log("user empty");
+      Nav.navigate("SignIn");
+    }
 
     dispatch(me());
-    //setImage(info.picture);
+
     return () => {
       dispatch(reset());
     };
@@ -57,8 +56,6 @@ const Home = () => {
         })
       );
     }
-    // setImage(result.uri)
-    dispatch(me());
   };
   if (isLoading) {
     <div>is loading</div>;

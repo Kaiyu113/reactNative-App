@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 const SignIn = () => {
   const Nav = useNavigation();
-  const focus = useIsFocused();
   const dispatch = useDispatch();
   const { height } = useWindowDimensions();
   const { control, handleSubmit, getValues } = useForm();
@@ -24,17 +23,17 @@ const SignIn = () => {
     (state) => state.auth
   );
 
-  useEffect(() => {
-    if (isError) {
-      console.log(message);
-    }
+  // useEffect(() => {
+  //   if (isError) {
+  //     console.log(message);
+  //   }
 
-    if (isSuccess || user) {
-      console.log("successful sign up");
-      Nav.navigate("Home");
-    }
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, Nav, dispatch]);
+  //   if (isSuccess || user) {
+  //     console.log("successful sign up");
+  //     Nav.navigate("Home");
+  //   }
+  //   dispatch(reset());
+  // }, [user, isError, isSuccess, message, Nav, dispatch]);
 
   const onLoginPress = () => {
     dispatch(login(formData));

@@ -17,9 +17,9 @@ const Edit = () => {
     if (isError) {
       console.log(message);
     }
-    if (isSuccess) {
-      Nav.navigate("HOME");
-    }
+    // if (isSuccess) {
+    //   Nav.navigate("HOME");
+    // }
 
     if (!user) {
       console.log("user empty");
@@ -29,14 +29,14 @@ const Edit = () => {
       dispatch(reset());
     };
   }, [user, Nav, isError, message, isSuccess, dispatch]);
-  console.log(formData);
+
   const Nav = useNavigation();
   const onBackHome = () => {
-    console.log("Home");
     Nav.navigate("Home");
   };
   console.log(formData);
   const onUpdate = () => {
+    //console.log(formData);
     dispatch(update(formData));
   };
 
