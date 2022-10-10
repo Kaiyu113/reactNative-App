@@ -1,17 +1,38 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, Fontisto, FontAwesome } from "@expo/vector-icons";
-//import ImagePicker from "react-native-image-picker";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
+import { me, reset, Onlogout, update } from "../../features/authSlice";
+
 const Home = () => {
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState("");
   const Nav = useNavigation();
 
-  const onLogout = () => {
-    Nav.navigate("SignIn");
-  };
+  const dispatch = useDispatch();
+  const { user, message, isError, info, isLoading } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      console.log(message);
+    }
+
+    // if (!user) {
+    //   console.log("user empty");
+    //   Nav.navigate("SignIn");
+    // }
+
+    dispatch(me());
+    //setImage(info.picture);
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, Nav, isError, message, dispatch]);
+  //user, Nav, isError, info, dispatch
   const onEdit = () => {
     Nav.navigate("Edit");
   };
@@ -30,9 +51,18 @@ const Home = () => {
     console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      dispatch(
+        update({
+          picture: result.uri,
+        })
+      );
     }
+    // setImage(result.uri)
+    dispatch(me());
   };
+  if (isLoading) {
+    <div>is loading</div>;
+  }
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -41,13 +71,15 @@ const Home = () => {
             name="chevron-back"
             size={35}
             color="black"
-            onPress={onLogout}
+            onPress={() => dispatch(Onlogout())}
           />
           <Fontisto name="more-v" size={24} color="black" />
         </View>
         <View style={{ alignSelf: "center" }}>
           <Image
-            source={require("../../assets/icon.png")}
+            source={{
+              uri: info.picture,
+            }}
             style={styles.icon}
           />
         </View>
@@ -60,23 +92,31 @@ const Home = () => {
           />
         </View>
         <View style={styles.infoContainer}>
-          <Text style={{ fontWeight: "200", fontSize: 40 }}>Name</Text>
-          <Text>Balance:300</Text>
+          {info.name ? (
+            <Text style={{ fontWeight: "200", fontSize: 40 }}>
+              {info.name.firstname} {info.name.lastname}
+            </Text>
+          ) : null}
+          <Text>Balance:{info.balance}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.buttonBox}>
-            <Button onPress={onBalance} text="BALANCE" />
+            <Button onPress={onBalance} text={`$ ${info.balance}`} />
           </View>
           <View style={styles.buttonBox}>
             <Button onPress={onEdit} text="EDIT" />
           </View>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={{ fontWeight: "200", fontSize: 25 }}>company</Text>
-          <Text style={{ fontWeight: "200", fontSize: 25 }}>Name</Text>
-          <Text style={{ fontWeight: "200", fontSize: 25 }}>Name</Text>
-          <Text style={{ fontWeight: "200", fontSize: 25 }}>Name</Text>
-          <Text style={{ fontWeight: "200", fontSize: 25 }}>Name</Text>
+          <Text style={{ fontWeight: "200", fontSize: 25 }}>
+            company:{info.company}
+          </Text>
+          <Text style={{ fontWeight: "200", fontSize: 25 }}>
+            age:{info.age}
+          </Text>
+          <Text style={{ fontWeight: "200", fontSize: 25 }}>
+            address:{info.address}
+          </Text>
         </View>
       </View>
     </ScrollView>

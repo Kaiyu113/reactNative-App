@@ -6,6 +6,7 @@ const Input = ({ secureTextEntry, name, control, rules = {} }) => {
     <Controller
       control={control}
       name={name}
+      defaultValue=""
       rules={rules}
       render={({
         field: { value, onChange, onBlur },

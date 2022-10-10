@@ -1,14 +1,19 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import Input from "../common/TextInput";
 import Button from "../common/Button";
 import { useForm } from "react-hook-form";
-import Axios from "axios";
+import { register, reset } from "../../features/authSlice";
 const SignUp = () => {
   const { control, handleSubmit, watch, getValues } = useForm();
+  const { user, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
   const Nav = useNavigation();
+  const dispatch = useDispatch();
   const pwd = watch("password");
   const formData = getValues();
 
@@ -16,28 +21,28 @@ const SignUp = () => {
     /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const PASSWORD_REGEX =
     /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-  const { company, password, firstname, lastname, email } = formData;
-  const onSignupPress = () => {
-    //console.log("SignUp");
-    //Nav.navigate("SignIn");
 
-    Axios.post(
-      "https://localhost:5000/api/users/",
-      {
-        headers: {
-          Accept: "application/json, text/plain, /",
-          "Content-Type": "multipart/form-data",
-        },
-      },
-      formData
-    )
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error));
+  useEffect(() => {
+    if (isError) {
+      console.log(message);
+    }
+
+    if (isSuccess || user) {
+      console.log("successful sign up");
+      Nav.navigate("Home");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, Nav, dispatch]);
+
+  //console.log(isSuccess);
+  const onSignupPress = () => {
+    dispatch(register(formData));
   };
 
   const onSignonPress = () => {
-    //Nav.navigate("SignIn");
+    Nav.navigate("SignIn");
   };
+
   return (
     <ScrollView>
       <View style={styles.root}>

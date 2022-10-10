@@ -48,7 +48,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Check for user email
   const user = await User.findOne({ email });
-
+  console.log(user);
+  console.log(req.body);
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
       _id: user.id,
@@ -68,7 +69,36 @@ const loginUser = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   res.status(200).json(req.user);
 });
+// @desc    update user data
+// @route   PATCH /api/users/update
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(400);
+    throw new Error("user not found");
+  }
+  //console.log(req.user.id);
+  // // Check for user
+  // if (!req.user) {
+  //   res.status(401);
+  //   throw new Error("User not found");
+  //}
 
+  // // Make sure the logged in user matches the goal user
+  // if (goal.user.toString() !== req.user.id) {
+  //   res.status(401);
+  //   throw new Error("User not authorized");
+  // }
+  console.log(req.body);
+  //console.log(req.user.id);
+  const updatedGoal = await User.findByIdAndUpdate(req.user.id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json(updatedGoal);
+});
+//---------------------------
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -80,4 +110,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  updateUser,
 };

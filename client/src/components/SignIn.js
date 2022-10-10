@@ -5,25 +5,42 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from "react-native";
-
-import React from "react";
+import { React, useEffect } from "react";
 import logo from "../../assets/logo.png";
 import Input from "../common/TextInput";
 import Button from "../common/Button";
-import { useNavigation } from "@react-navigation/native";
+import { login, reset } from "../../features/authSlice";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 const SignIn = () => {
   const Nav = useNavigation();
+  const focus = useIsFocused();
+  const dispatch = useDispatch();
   const { height } = useWindowDimensions();
+  const { control, handleSubmit, getValues } = useForm();
+  const formData = getValues();
+  const { user, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
-  const { control, handleSubmit } = useForm();
+  useEffect(() => {
+    if (isError) {
+      console.log(message);
+    }
 
-  const onLoginPress = (data) => {
-    console.warn(data);
-    Nav.navigate("Home");
+    if (isSuccess || user) {
+      console.log("successful sign up");
+      Nav.navigate("Home");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, Nav, dispatch]);
+
+  const onLoginPress = () => {
+    dispatch(login(formData));
   };
+
   const onSignup = () => {
-    //console.warn("onSignup");
     Nav.navigate("SignUp");
   };
 
@@ -37,13 +54,13 @@ const SignIn = () => {
       <View>
         <Text style={styles.text}>Username</Text>
         <Input
-          name="Username"
+          name="email"
           control={control}
-          rules={{ required: "Username is required" }}
+          rules={{ required: "email is required" }}
         />
-        <Text style={styles.text}>Password</Text>
+        <Text style={styles.text}>password</Text>
         <Input
-          name="Password"
+          name="password"
           control={control}
           secureTextEntry={true}
           rules={{
