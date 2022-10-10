@@ -17,23 +17,23 @@ const SignIn = () => {
   const Nav = useNavigation();
   const dispatch = useDispatch();
   const { height } = useWindowDimensions();
-  const { control, handleSubmit, getValues } = useForm();
-  const formData = getValues();
+  const { control, handleSubmit, watch } = useForm();
+  const formData = watch();
   const { user, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     console.log(message);
-  //   }
+  useEffect(() => {
+    if (isError) {
+      console.log(message);
+    }
 
-  //   if (isSuccess || user) {
-  //     console.log("successful sign up");
-  //     Nav.navigate("Home");
-  //   }
-  //   dispatch(reset());
-  // }, [user, isError, isSuccess, message, Nav, dispatch]);
+    if (isSuccess || user) {
+      console.log("successful sign up");
+      Nav.navigate("Home");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, Nav, dispatch]);
 
   const onLoginPress = () => {
     dispatch(login(formData));

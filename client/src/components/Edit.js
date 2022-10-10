@@ -7,9 +7,9 @@ import Button from "../common/Button";
 import { useForm } from "react-hook-form";
 import { update, reset } from "../../features/authSlice";
 const Edit = () => {
-  const { control, handleSubmit, getValues } = useForm();
+  const { control, handleSubmit, watch } = useForm();
   const dispatch = useDispatch();
-  const formData = getValues();
+  const formData = watch();
   const { user, message, isError, isSuccess } = useSelector(
     (state) => state.auth
   );
@@ -18,7 +18,7 @@ const Edit = () => {
       console.log(message);
     }
     // if (isSuccess) {
-    //   Nav.navigate("HOME");
+    //   Nav.navigate("Home");
     // }
 
     if (!user) {
@@ -34,9 +34,9 @@ const Edit = () => {
   const onBackHome = () => {
     Nav.navigate("Home");
   };
-  console.log(formData);
+
   const onUpdate = () => {
-    //console.log(formData);
+    console.log(formData);
     dispatch(update(formData));
   };
 
@@ -69,6 +69,11 @@ const Edit = () => {
             name="address"
             control={control}
             rules={{ required: "address name is required" }}
+          />
+          <Input
+            name="balance"
+            control={control}
+            rules={{ required: "balance name is required" }}
           />
           <Button text="Update" onPress={handleSubmit(onUpdate)} />
           <Button text="Back to Home" onPress={onBackHome} type="TERTIARY" />
